@@ -1,11 +1,11 @@
-# Ama'zone
+# ama'zone
 
 Mini-application Vue 3 de gestion d'articles. Le projet utilise Vue Router, des composants réutilisables et un tableau local en mémoire.
 
 ## Installation
 
 ```sh
-pnpm install
+pnpm i
 pnpm dev
 ```
 
@@ -28,15 +28,15 @@ pnpm build
 
 ## Routes
 
-| Route | Rôle |
-| --- | --- |
-| `/` | Accueil |
-| `/articles` | Recherche et liste paginée |
-| `/article/:id` | Détail d'un article |
-| `/ajouter` | Création d'un article |
-| `/panier` | Articles sélectionnés |
-| `/login` | Connexion simulée |
-| `/admin` | Administration et suppression |
+| Route          | Rôle                          |
+| -------------- | ----------------------------- |
+| `/`            | Accueil                       |
+| `/articles`    | Recherche et liste paginée    |
+| `/article/:id` | Détail d'un article           |
+| `/ajouter`     | Création d'un article         |
+| `/panier`      | Articles sélectionnés         |
+| `/login`       | Connexion simulée             |
+| `/admin`       | Administration et suppression |
 
 ## Architecture
 

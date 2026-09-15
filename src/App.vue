@@ -26,17 +26,15 @@ const articlesFiltres = computed(() => {
   const terme = recherche.texte.trim().toLocaleLowerCase()
 
   return articles.filter((article) => {
-    const correspondAuTexte =
-      !terme ||
-      article.titre.toLocaleLowerCase().includes(terme) ||
-      article.description.toLocaleLowerCase().includes(terme)
-    const correspondALaCategorie =
-      !recherche.categorie || article.categorie === recherche.categorie
+    const correspondAuTexte = !terme || article.titre.toLocaleLowerCase().includes(terme)
+    const correspondALaCategorie = !recherche.categorie || article.categorie === recherche.categorie
 
     return correspondAuTexte && correspondALaCategorie
   })
 })
-const nombrePages = computed(() => Math.max(1, Math.ceil(articlesFiltres.value.length / recherche.parPage)))
+const nombrePages = computed(() =>
+  Math.max(1, Math.ceil(articlesFiltres.value.length / recherche.parPage)),
+)
 const articlesPage = computed(() => {
   const debut = (recherche.page - 1) * recherche.parPage
 
@@ -161,14 +159,15 @@ async function chargerImagesArticles(articlesVisibles) {
       imagesChargees.add(article.id)
 
       try {
-        const response = await fetch("https://picsum.photos/800") // images aleatoires
+        const response = await fetch('https://picsum.photos/800') // images aleatoires
         const image = response.url
 
         if (image) {
           article.image = image
         }
       } catch {
-        article.image = "https://static.vecteezy.com/system/resources/previews/036/624/119/large_2x/system-error-icon-failure-pc-interface-error-message-computer-window-alert-popup-vector.jpg"
+        article.image =
+          'https://static.vecteezy.com/system/resources/previews/036/624/119/large_2x/system-error-icon-failure-pc-interface-error-message-computer-window-alert-popup-vector.jpg'
       }
     }),
   )
@@ -197,7 +196,7 @@ onMounted(restaurerDonneesLocales)
 <template>
   <div class="app-shell">
     <header class="site-header">
-      <RouterLink class="brand" to="/">Ama'zone</RouterLink>
+      <RouterLink class="brand" to="/">ama'zone</RouterLink>
       <nav class="main-nav" aria-label="Navigation principale">
         <RouterLink to="/articles">Articles</RouterLink>
         <RouterLink to="/ajouter">Ajouter</RouterLink>
@@ -205,7 +204,12 @@ onMounted(restaurerDonneesLocales)
         <RouterLink v-if="session.isConnected" to="/admin">Administration</RouterLink>
         <RouterLink v-else to="/login">Connexion</RouterLink>
       </nav>
-      <button v-if="session.isConnected" class="secondary-button" type="button" @click="deconnecter">
+      <button
+        v-if="session.isConnected"
+        class="secondary-button"
+        type="button"
+        @click="deconnecter"
+      >
         Déconnexion
       </button>
     </header>

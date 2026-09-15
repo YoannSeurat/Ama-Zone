@@ -52,7 +52,7 @@ a {
   padding: 1rem clamp(1rem, 4vw, 4rem);
 }
 .brand {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Space Mono', monospace;
   font-size: 1.5rem;
   font-weight: 700;
   justify-self: start;
@@ -82,7 +82,7 @@ main {
 }
 h1,
 h2 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Space Mono', monospace;
 }
 main > nav {
   display: flex;
