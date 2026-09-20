@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import { articlesInitiaux } from '../data/articles'
 import AccueilView from '../views/AccueilView.vue'
 import AdminView from '../views/AdminView.vue'
 import AjouterView from '../views/AjouterView.vue'
@@ -39,12 +40,33 @@ router.beforeEach((to) => {
     }
   }
 
-  return !to.meta.requiresAuth || isConnected
-    ? true
-    : {
-        name: 'login',
-        query: { redirect: to.fullPath },
+  if (to.meta.requiresAuth && !isConnected) {
+    return {
+      name: 'login',
+      query: { redirect: to.fullPath },
+    }
+  }
+
+  if (to.name === 'article-detail') {
+    const articleId = Number(to.params.id)
+    const sessionArticles = sessionStorage.getItem('ama-zone-articles')
+    let list = articlesInitiaux
+
+    if (sessionArticles) {
+      try {
+        list = JSON.parse(sessionArticles)
+      } catch {
+        list = articlesInitiaux
       }
+    }
+
+    const exists = list.some((article) => article.id === articleId)
+    if (!exists) {
+      return { name: 'articles' }
+    }
+  }
+
+  return true
 })
 
 export default router

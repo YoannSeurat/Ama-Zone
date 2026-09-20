@@ -5,10 +5,47 @@ import { articlesInitiaux } from './data/articles'
 const STORAGE_KEYS = {
   cart: 'ama-zone-cart',
   session: 'ama-zone-session',
+  articles: 'ama-zone-articles',
+  imageSeed: 'ama-zone-image-seed',
 }
 
-const articles = reactive([...articlesInitiaux])
+// Nettoyage de l'ancienne persistance définitive si présente
+localStorage.removeItem(STORAGE_KEYS.articles)
+localStorage.removeItem('ama-zone-images-cache')
+
+// Seed aléatoire généré une seule fois par session (nouveau au redémarrage, stable au F5)
+function getSessionImageSeed() {
+  let seed = sessionStorage.getItem(STORAGE_KEYS.imageSeed)
+  if (!seed) {
+    seed = Math.floor(Math.random() * 1_000_000).toString()
+    sessionStorage.setItem(STORAGE_KEYS.imageSeed, seed)
+  }
+  return seed
+}
+
+const IMAGE_SEED = getSessionImageSeed()
+
 const imagesChargees = new Set()
+
+function chargerArticlesInitiaux() {
+  const articlesSauvegardes = sessionStorage.getItem(STORAGE_KEYS.articles)
+
+  if (articlesSauvegardes) {
+    try {
+      const parsed = JSON.parse(articlesSauvegardes)
+      parsed.forEach((a) => {
+        if (a.image) imagesChargees.add(a.id)
+      })
+      return parsed
+    } catch {
+      sessionStorage.removeItem(STORAGE_KEYS.articles)
+    }
+  }
+
+  return articlesInitiaux.map((a) => ({ ...a }))
+}
+
+const articles = reactive(chargerArticlesInitiaux())
 const panier = reactive([])
 const session = reactive({
   isConnected: false,
@@ -40,7 +77,7 @@ const articlesPage = computed(() => {
 
   return articlesFiltres.value.slice(debut, debut + recherche.parPage)
 })
-const totalPanier = computed(() => panier.length)
+const totalPanier = computed(() => panier.reduce((sum, item) => sum + (item.quantite || 1), 0))
 const articlesStore = reactive({
   articles,
   panier,
@@ -55,12 +92,17 @@ const articlesStore = reactive({
   supprimerArticle,
   ajouterAuPanier,
   supprimerDuPanier,
+  enleverDuPanier,
   definirRecherche,
   definirCategorie,
   definirPage,
   connecter,
   deconnecter,
 })
+
+function sauvegarderArticles() {
+  sessionStorage.setItem(STORAGE_KEYS.articles, JSON.stringify(articles))
+}
 
 function sauvegarderPanier() {
   localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(panier))
@@ -73,6 +115,7 @@ function ajouterArticle(article) {
   }
 
   articles.push(nouvelArticle)
+  sauvegarderArticles()
   return nouvelArticle
 }
 
@@ -81,14 +124,30 @@ function supprimerArticle(articleId) {
 
   if (index !== -1) {
     articles.splice(index, 1)
+    sauvegarderArticles()
   }
 
   supprimerDuPanier(articleId)
 }
 
 function ajouterAuPanier(article) {
-  if (!panier.some((articleDuPanier) => articleDuPanier.id === article.id)) {
-    panier.push(article)
+  const item = panier.find((articleDuPanier) => articleDuPanier.id === article.id)
+  if (item) {
+    item.quantite = (item.quantite || 1) + 1
+  } else {
+    panier.push({ ...article, quantite: 1 })
+  }
+  sauvegarderPanier()
+}
+
+function enleverDuPanier(articleId) {
+  const index = panier.findIndex((articleDuPanier) => articleDuPanier.id === articleId)
+  if (index !== -1) {
+    if (panier[index].quantite && panier[index].quantite > 1) {
+      panier[index].quantite -= 1
+    } else {
+      panier.splice(index, 1)
+    }
     sauvegarderPanier()
   }
 }
@@ -134,7 +193,8 @@ function restaurerDonneesLocales() {
 
   if (panierSauvegarde) {
     try {
-      panier.push(...JSON.parse(panierSauvegarde))
+      const parsed = JSON.parse(panierSauvegarde)
+      panier.push(...parsed.map((item) => ({ ...item, quantite: item.quantite || 1 })))
     } catch {
       localStorage.removeItem(STORAGE_KEYS.cart)
     }
@@ -150,27 +210,21 @@ function restaurerDonneesLocales() {
 }
 
 async function chargerImagesArticles(articlesVisibles) {
-  await Promise.all(
-    articlesVisibles.map(async (article) => {
-      if (imagesChargees.has(article.id)) {
-        return
-      }
+  let aSauvegarder = false
 
-      imagesChargees.add(article.id)
+  articlesVisibles.forEach((article) => {
+    if (article.image || imagesChargees.has(article.id)) {
+      return
+    }
 
-      try {
-        const response = await fetch('https://picsum.photos/800') // images aleatoires
-        const image = response.url
+    imagesChargees.add(article.id)
+    article.image = `https://picsum.photos/800/600?random=${IMAGE_SEED}${article.id}`
+    aSauvegarder = true
+  })
 
-        if (image) {
-          article.image = image
-        }
-      } catch {
-        article.image =
-          'https://static.vecteezy.com/system/resources/previews/036/624/119/large_2x/system-error-icon-failure-pc-interface-error-message-computer-window-alert-popup-vector.jpg'
-      }
-    }),
-  )
+  if (aSauvegarder) {
+    sauvegarderArticles()
+  }
 }
 
 watch(
@@ -208,7 +262,7 @@ onMounted(restaurerDonneesLocales)
       </nav>
       <button
         v-if="session.isConnected"
-        class="secondary-button"
+        class="deconnexion-button"
         type="button"
         @click="deconnecter"
       >

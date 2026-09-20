@@ -13,9 +13,11 @@ const router = useRouter()
     <h1>Articles</h1>
     <BarreRecherche @rechercher="store.definirRecherche" />
     <label>
-      Filtrer par catégorie
-      <select :value="store.recherche.categorie" @change="store.definirCategorie($event.target.value)">
-        <option value="">Toutes les catégories</option>
+      <select
+        :value="store.recherche.categorie"
+        @change="store.definirCategorie($event.target.value)"
+      >
+        <option value="">Toutes catégories</option>
         <option v-for="categorie in store.categories" :key="categorie" :value="categorie">
           {{ categorie }}
         </option>
