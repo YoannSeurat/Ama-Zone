@@ -14,9 +14,13 @@ defineProps({
     type: Number,
     required: true,
   },
+  admin: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-defineEmits(['changer-page', 'voir', 'ajouter', 'supprimer'])
+defineEmits(['changer-page', 'voir', 'ajouter', 'supprimer', 'modifier'])
 </script>
 
 <template>
@@ -26,14 +30,20 @@ defineEmits(['changer-page', 'voir', 'ajouter', 'supprimer'])
       v-for="article in articles"
       :key="article.id"
       :article="article"
+      :admin="admin"
       @voir="$emit('voir', $event)"
       @ajouter="$emit('ajouter', $event)"
+      @modifier="$emit('modifier', $event)"
       @supprimer="$emit('supprimer', $event)"
     />
   </section>
   <nav v-if="nombrePages > 1" class="pagination" aria-label="Pagination">
-    <button type="button" :disabled="page === 1" @click="$emit('changer-page', page - 1)">Précédent</button>
+    <button type="button" :disabled="page === 1" @click="$emit('changer-page', page - 1)">
+      Précédent
+    </button>
     <span>Page {{ page }} sur {{ nombrePages }}</span>
-    <button type="button" :disabled="page === nombrePages" @click="$emit('changer-page', page + 1)">Suivant</button>
+    <button type="button" :disabled="page === nombrePages" @click="$emit('changer-page', page + 1)">
+      Suivant
+    </button>
   </nav>
 </template>

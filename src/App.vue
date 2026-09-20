@@ -196,7 +196,9 @@ onMounted(restaurerDonneesLocales)
 <template>
   <div class="app-shell">
     <header class="site-header">
-      <RouterLink class="brand" to="/">ama'zone</RouterLink>
+      <RouterLink class="brand" to="/"
+        ><img src="/logo/logo white.png" alt="ama'zone logo" class="logo-img"
+      /></RouterLink>
       <nav class="main-nav" aria-label="Navigation principale">
         <RouterLink to="/articles">Articles</RouterLink>
         <RouterLink to="/ajouter">Ajouter</RouterLink>

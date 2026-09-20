@@ -13,7 +13,7 @@ function envoyerRecherche() {
   <form class="search-bar" @submit.prevent="envoyerRecherche">
     <label for="recherche">Rechercher un article</label>
     <div>
-      <input id="recherche" v-model="recherche" type="search" placeholder="Ex. casque audio" />
+      <input id="recherche" v-model="recherche" type="search" placeholder="ex. casque audio" />
       <button type="submit">Rechercher</button>
     </div>
   </form>

@@ -1,13 +1,20 @@
 <script setup>
 import { inject } from 'vue'
+import { useRouter } from 'vue-router'
 import ArticleItem from '../components/ArticleItem.vue'
 
 const store = inject('articlesStore')
+const router = useRouter()
 
 function supprimer(articleId) {
   if (window.confirm('Supprimer cet article ?')) {
     store.supprimerArticle(articleId)
   }
+}
+
+function modifier(article) {
+  // Navigation ou action pour éditer l'article
+  console.log('Modifier article', article)
 }
 </script>
 
@@ -20,7 +27,9 @@ function supprimer(articleId) {
         v-for="article in store.articles"
         :key="article.id"
         :article="article"
-        @ajouter="store.ajouterAuPanier($event)"
+        :admin="true"
+        @voir="router.push(`/article/${$event.id}`)"
+        @modifier="modifier($event)"
         @supprimer="supprimer($event.id)"
       />
     </section>
