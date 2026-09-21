@@ -14,11 +14,27 @@ function seConnecter() {
 </script>
 
 <template>
-  <main>
-    <h1>Connexion</h1>
-    <form @submit.prevent="seConnecter">
-      <label>Nom <input v-model.trim="username" required /></label>
-      <button type="submit">Se connecter</button>
-    </form>
+  <main class="login-page">
+    <div class="login-page__heading">
+      <h2>Connexion</h2>
+    </div>
+
+    <section class="login-page__panel">
+      <form class="login-form" @submit.prevent="seConnecter">
+        <label class="login-form__label" for="login-name">Nom</label>
+        <input
+          id="login-name"
+          v-model.trim="username"
+          class="login-form__input"
+          autocomplete="username"
+          placeholder="e.g. admin"
+          required
+        />
+        <button class="login-form__submit" type="submit">
+          <span>Se connecter</span>
+          <img src="/icons/front arrow white.svg" alt="" />
+        </button>
+      </form>
+    </section>
   </main>
 </template>
