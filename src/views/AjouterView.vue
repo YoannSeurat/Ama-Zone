@@ -14,9 +14,16 @@ function ajouter(article) {
 </script>
 
 <template>
-  <main>
-    <h1>Ajouter un article</h1>
-    <FormulaireArticle @soumettre="ajouter" @annuler="router.push('/articles')" />
-    <p v-if="message">{{ message }}</p>
+  <main class="add-page">
+    <div class="add-page__header">
+      <h1>Ajouter un article</h1>
+    </div>
+
+    <FormulaireArticle
+      :categories="store.categories"
+      @soumettre="ajouter"
+      @annuler="router.push('/articles')"
+    />
+    <p v-if="message" class="add-page__success">{{ message }}</p>
   </main>
 </template>

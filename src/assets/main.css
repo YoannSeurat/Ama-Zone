@@ -144,7 +144,7 @@ main > nav a {
   align-items: center;
   display: flex;
   gap: 0.75rem;
-  max-width: 760px;
+  width: 98%;
 }
 .search-bar__input {
   border: 1px solid #c8c2b7;
@@ -574,10 +574,79 @@ select {
 }
 
 /* Search and forms */
+.add-page {
+  max-width: 860px;
+}
+.add-page__header {
+  margin-bottom: 1.5rem;
+}
+.add-page__header h1 {
+  margin-bottom: 0.35rem;
+}
+.add-page__header p {
+  color: #52606d;
+  margin: 0;
+}
+.add-page__success {
+  background: #edf7ed;
+  border: 1px solid #b7d9b2;
+  border-radius: 12px;
+  color: #2f5d39;
+  max-width: 760px;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+}
 .form-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.article-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 760px;
+}
+.article-form__card {
+  background: white;
+  border: 1px solid #dfe6e8;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  padding: clamp(1rem, 2vw, 1.75rem);
+}
+.article-form__grid {
+  display: grid;
+  gap: 1rem;
+}
+.article-form__field {
+  display: grid;
   gap: 0.5rem;
+}
+.article-form__field--two {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.article-form__field label {
+  color: #1f2933;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.article-form__field input,
+.article-form__field textarea,
+.article-form__field select {
+  border: 1px solid #c8d0d7;
+  border-radius: 14px;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+  min-height: 52px;
+  padding: 0.8rem 0.9rem;
+  max-width: none;
+  width: 100%;
+}
+.article-form__field textarea {
+  min-height: 130px;
+  resize: vertical;
 }
 .pagination {
   align-items: center;
@@ -628,11 +697,6 @@ select {
   border: 1px dashed #829ab1;
   padding: 2rem;
   text-align: center;
-}
-.article-form {
-  display: grid;
-  gap: 1rem;
-  max-width: 650px;
 }
 /* Cart page */
 .cart-page__intro {
