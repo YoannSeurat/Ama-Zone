@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, provide, reactive, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { articlesInitiaux } from './data/articles'
 
 const STORAGE_KEYS = {
@@ -46,6 +47,7 @@ function chargerArticlesInitiaux() {
 }
 
 const articles = reactive(chargerArticlesInitiaux())
+const router = useRouter()
 const panier = reactive([])
 const session = reactive({
   isConnected: false,
@@ -185,6 +187,7 @@ function deconnecter() {
   session.isConnected = false
   session.username = ''
   localStorage.removeItem(STORAGE_KEYS.session)
+  router.push('/login')
 }
 
 function restaurerDonneesLocales() {
