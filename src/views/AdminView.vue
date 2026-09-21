@@ -13,8 +13,7 @@ function supprimer(articleId) {
 }
 
 function modifier(article) {
-  // Navigation ou action pour éditer l'article
-  console.log('Modifier article', article)
+  router.push(`/article/${article.id}?admin=true&edit=true`)
 }
 </script>
 

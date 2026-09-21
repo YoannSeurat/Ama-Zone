@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, provide, reactive, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { articlesInitiaux } from './data/articles'
 
 const STORAGE_KEYS = {
@@ -47,6 +47,7 @@ function chargerArticlesInitiaux() {
 }
 
 const articles = reactive(chargerArticlesInitiaux())
+const route = useRoute()
 const router = useRouter()
 const panier = reactive([])
 const session = reactive({
@@ -91,6 +92,7 @@ const articlesStore = reactive({
   nombrePages,
   totalPanier,
   ajouterArticle,
+  modifierArticle,
   supprimerArticle,
   ajouterAuPanier,
   supprimerDuPanier,
@@ -119,6 +121,21 @@ function ajouterArticle(article) {
   articles.push(nouvelArticle)
   sauvegarderArticles()
   return nouvelArticle
+}
+
+function modifierArticle(articleId, modifications) {
+  const article = articles.find((item) => item.id === articleId)
+
+  if (!article) return null
+
+  Object.assign(article, modifications)
+  const articleDuPanier = panier.find((item) => item.id === articleId)
+  if (articleDuPanier) {
+    Object.assign(articleDuPanier, modifications)
+  }
+  sauvegarderArticles()
+  sauvegarderPanier()
+  return article
 }
 
 function supprimerArticle(articleId) {
@@ -187,7 +204,10 @@ function deconnecter() {
   session.isConnected = false
   session.username = ''
   localStorage.removeItem(STORAGE_KEYS.session)
-  router.push('/login')
+
+  if (route.name === 'admin') {
+    router.push('/login')
+  }
 }
 
 function restaurerDonneesLocales() {
